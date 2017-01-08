@@ -1,8 +1,8 @@
 class CollisionDetector(object) :
 	
-	def __init__(self, ship, asteroids, projectiles) :
+	def __init__(self, ship, generator, projectiles) :
 		self.ship = ship
-		self.asteroids = asteroids #list
+		self.generator = generator
 		self.projectiles = projectiles #list
 
 	'''
@@ -10,18 +10,6 @@ class CollisionDetector(object) :
 	'''
 	def ship_hits_asteroid(self, a) :
 		pass
-
-	''' 
-	Since multiple asteroids can be hit at the same time,
-	this method returns a list with asteroids impacted
-	'''
-	def get_hit_asteroids(self, asteroids, projectiles) :
-		hit_asteroids = [] 
-		for a in asteroids :
-			for p in projectiles :
-				if self.projectile_hits_asteroid(p, a) :
-					hit_asteroids.append(a)
-		return hit_asteroids
 
 	'''
 	Checks if an specific asteroid has been hit by an 
@@ -32,17 +20,13 @@ class CollisionDetector(object) :
 
 	'''
 	Handles the given MUTABLE types (asteroids and projectiles) when
-	both collide. Return the hit asteroids so the caller can do more
-	with that information, for example, create an explosion animation 
-	where the asteroid was and then place more little asteroids in its
-	place
+	both collide.
 	'''
-	def handle_projectile_hits_asteroid(self, asteroids, projectiles, generator) :
-		hit_asteroids = []
-		for a in asteroids :
-			for p in projectiles :
+	def handle_projectile_hits_asteroid(self) :
+		#hit_asteroids = []
+		for a in self.generator.asteroids :
+			for p in self.projectiles :
 				if self.projectile_hits_asteroid(p, a) :
-					#asteroids.remove(a)
-					#projectiles.remove(p)
-					if a.type == 1 :
-						generator.generate_debris(a.pos)
+					self.generator.asteroids.remove(a)
+					self.projectiles.remove(p)
+					self.generator.generate_debris(a.pos)

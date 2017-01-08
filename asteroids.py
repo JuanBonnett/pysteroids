@@ -5,6 +5,7 @@ import test
 from ship import *
 from asteroid import *
 from physics import *
+from win32api import GetSystemMetrics
 
 # Screen and Color Variables
 D_WIDTH = 800
@@ -20,8 +21,8 @@ pygame.mouse.set_visible(True)
 # Entities initialization
 ship = Ship(D_WIDTH / 2, D_HEIGHT - (D_HEIGHT / 4), display)
 ag = AsteroidGenerator(display)
-ag.generate(6)
-cd = CollisionDetector(ship, ag.asteroids, ship.projectiles)
+ag.generate(4)
+cd = CollisionDetector(ship, ag, ship.projectiles)
 
 playing = True
 while playing :
@@ -38,6 +39,9 @@ while playing :
 		if event.type == pygame.KEYDOWN :
 			if event.key == pygame.K_SPACE :
 				ship.shoot()
+
+			if event.key == pygame.K_p :
+				playing = False
 		# -- End Keydown events
 		
 		# End event handling -------------------------
@@ -55,15 +59,9 @@ while playing :
 	if keys[pygame.K_w] :
 		ship.boost()
 
+	cd.handle_projectile_hits_asteroid()
 	ship.update()
 	ag.update()
-	cd.handle_projectile_hits_asteroid(ag.asteroids, ship.projectiles, ag)
-	'''
-	if hit_asteroids :	
-		for ha in hit_asteroids :
-			#ha.explosion()
-			print('Asteroid hit at: ', ha.pos.x, ',', ha.pos.y)
-			ag.generate_debris(ha.pos)'''
 	# -- End Elements updates
 	
 
